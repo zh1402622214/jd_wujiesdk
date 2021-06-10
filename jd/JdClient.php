@@ -52,7 +52,7 @@ class JdClient
 		if ($this->connectTimeout) {
 			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $this->connectTimeout);
 		}
-		//https ÇëÇó
+		//https è¯·æ±‚
 		if(strlen($url) > 5 && strtolower(substr($url,0,5)) == "https" ) {
 			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
@@ -64,11 +64,11 @@ class JdClient
 			$postMultipart = false;
 			foreach ($postFields as $k => $v)
 			{
-				if("@" != substr($v, 0, 1))//ÅÐ¶ÏÊÇ²»ÊÇÎÄ¼þÉÏ´«
+				if("@" != substr($v, 0, 1))//åˆ¤æ–­æ˜¯ä¸æ˜¯æ–‡ä»¶ä¸Šä¼ 
 				{
 					$postBodyString .= "$k=" . urlencode($v) . "&"; 
 				}
-				else//ÎÄ¼þÉÏ´«ÓÃmultipart/form-data£¬·ñÔòÓÃwww-form-urlencoded
+				else//æ–‡ä»¶ä¸Šä¼ ç”¨multipart/form-dataï¼Œå¦åˆ™ç”¨www-form-urlencoded
 				{
 					$postMultipart = true;
 				}
@@ -88,14 +88,14 @@ class JdClient
 		
 		if (curl_errno($ch))
 		{
-			throw new Exception(curl_error($ch),0);
+			throw new \Exception(curl_error($ch),0);
 		}
 		else
 		{
 			$httpStatusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 			if (200 !== $httpStatusCode)
 			{
-				throw new Exception($reponse,$httpStatusCode);
+				throw new \Exception($reponse,$httpStatusCode);
 			}
 		}
 		curl_close($ch);
@@ -104,7 +104,7 @@ class JdClient
 
 	public function execute($request, $access_token = null)
 	{
-		//×é×°ÏµÍ³²ÎÊý
+		//ç»„è£…ç³»ç»Ÿå‚æ•°
         $sysParams["app_key"] = $this->appKey;
         $version = $request->getVersion();
 
@@ -116,19 +116,19 @@ class JdClient
            $sysParams["access_token"] = $access_token;
         }
 
-		//»ñÈ¡ÒµÎñ²ÎÊý
+		//èŽ·å–ä¸šåŠ¡å‚æ•°
 		$apiParams = $request->getApiParas();
 		$sysParams[$this->json_param_key] = $apiParams;
 
-		//Ç©Ãû
+		//ç­¾å
 		$sysParams["sign"] = $this->generateSign($sysParams);
-		//ÏµÍ³²ÎÊý·ÅÈëGETÇëÇó´®
+		//ç³»ç»Ÿå‚æ•°æ”¾å…¥GETè¯·æ±‚ä¸²
 		$requestUrl = $this->serverUrl . "?";
 		foreach ($sysParams as $sysParamKey => $sysParamValue)
 		{
 			$requestUrl .= "$sysParamKey=" . urlencode($sysParamValue) . "&";
 		}
-		//·¢ÆðHTTPÇëÇó
+		//å‘èµ·HTTPè¯·æ±‚
 		try
 		{
 			$resp = $this->curl($requestUrl, $apiParams);
@@ -140,11 +140,11 @@ class JdClient
 			return $result;
 		}
 
-		//½âÎöJD·µ»Ø½á¹û
+		//è§£æžJDè¿”å›žç»“æžœ
 		$respWellFormed = false;
 		if ("json" == $this->format)
 		{
-			$respObject = json_decode($resp);
+			$respObject = json_decode($resp, true);
 			if (null !== $respObject)
 			{
 				$respWellFormed = true;
@@ -163,7 +163,7 @@ class JdClient
 			}
 		}
 
-		//·µ»ØµÄHTTPÎÄ±¾²»ÊÇ±ê×¼JSON»òÕßXML£¬¼ÇÏÂ´íÎóÈÕÖ¾
+		//è¿”å›žçš„HTTPæ–‡æœ¬ä¸æ˜¯æ ‡å‡†JSONæˆ–è€…XMLï¼Œè®°ä¸‹é”™è¯¯æ—¥å¿—
 		if (false === $respWellFormed)
 		{
 			$result->code = 0;
@@ -215,7 +215,7 @@ class JdClient
         if($timezone == 'UTC') {
             return '+0000';
         } else {
-            $timezone = new DateTimeZone($timezone);
+            $timezone = new \DateTimeZone($timezone);
             $transitions = array_slice($timezone->getTransitions(), -3, null, true);
 
             foreach (array_reverse($transitions, true) as $transition)
