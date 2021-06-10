@@ -1,5 +1,5 @@
 <?php
-namespace PrintingPrintDataSensitivePullData;
+namespace JDJOS\request\domain\PrintingPrintDataSensitivePullData;
 class Param1{
 
     private $params=array();
