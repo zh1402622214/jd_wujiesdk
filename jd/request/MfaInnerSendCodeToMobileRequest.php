@@ -1,4 +1,7 @@
 <?php
+
+namespace JDJOS\request;
+
 class MfaInnerSendCodeToMobileRequest
 {
 
